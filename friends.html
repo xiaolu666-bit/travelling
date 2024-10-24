@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅游日记</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* 使内容垂直居中 */
+            height: 100vh; /* 使body占满全屏高度 */
+            margin: 0;
+            background-image: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0'); /* 背景图 */
+            background-size: cover;
+            background-position: center;
+            font-family: 'Roboto', sans-serif; /* 使用新字体 */
+            color: #ffffff; /* 字体颜色 */
+        }
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.7); /* 半透明黑色导航条 */
+            width: 100%;
+            padding: 10px 20px; /* 调整内边距 */
+            display: flex;
+            justify-content: space-around; /* 水平均匀分布 */
+            align-items: center; /* 垂直居中对齐 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            position: fixed; /* 固定导航条 */
+            top: 0; /* 固定在顶部 */
+            left: 0; /* 使导航条覆盖整个宽度 */
+            z-index: 1000; /* 确保导航条在最上层 */
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s; /* 添加变换效果 */
+            font-weight: bold; /* 加粗链接文字 */
+        }
+        .navbar a:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1); /* 悬停放大效果 */
+        }
+        .dropdown {
+            display: none; /* 默认隐藏下拉菜单 */
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: black;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+        .navbar div {
+            position: relative;
+        }
+        .navbar div:hover .dropdown {
+            display: block; /* 鼠标悬停显示下拉菜单 */
+        }
+        .dropdown-item {
+            margin: 5px 0;
+            padding: 5px 10px;
+            transition: background-color 0.3s; /* 背景颜色过渡 */
+        }
+        .dropdown-item:hover {
+            background-color: #f0f0f0; /* 鼠标悬停下拉项的背景色 */
+        }
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* 垂直居中 */
+            padding: 20px; /* 减少内边距 */
+            backdrop-filter: blur(5px); /* 背景模糊效果 */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            max-width: 800px; /* 增加最大宽度 */
+            max-height: 400px; /* 设置最大高度 */
+            overflow: hidden; /* 超出内容隐藏 */
+            margin-top: 80px; /* 为了避免导航条覆盖内容，增加上边距 */
+        }
+        .word {
+            font-size: 48px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            display: inline-block;
+            margin-left: 10px;
+            color: #ffffff; /* 词语颜色 */
+        }
+        .fixed-text {
+            font-size: 48px;
+            font-weight: bold; /* 加粗 */
+            color: #ffffff; /* 固定文本颜色 */
+        }
+        .friends-container {
+            display: inline-block;
+        }
+        .me-text {
+            font-size: 36px;
+            margin-top: 10px;
+            font-weight: bold; /* 加粗 */
+            color: #f8f9fa; /* me文本颜色 */
+        }
+        @media (max-width: 600px) {
+            .navbar {
+                flex-direction: column; /* 小屏幕下导航条垂直排列 */
+            }
+            .navbar a {
+                margin: 5px 0; /* 增加链接之间的间距 */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html">首页</a>
+        <div>
+            <a href="#">旅行</a>
+            <div class="dropdown">
+                 <div style="color: black" class="dropdown-item"><a href="#">常州</a></div>
+                 <div class="dropdown-item" style="color: black;"><a href="#">南京</a></div>
+            </div>
+        </div>
+        <div>
+            <a href="#">人员</a>
+            <div class="dropdown">
+                <div class="dropdown-item" style="color: black;"><a href="#">小幽</a></div>
+                <div class="dropdown-item" style="color: black;"><a href="#">寄居蟹</a></div>
+                <div class="dropdown-item" style="color: black;"><a href="#">小清</a></div>
+                <div class="dropdown-item" style="color: black;"><a href="#">小泉</a></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="friends-container">
+            <span class="fixed-text">my friends：</span>
+            <span class="word" id="wordDisplay"></span>
+        </div>
+        <div class="me-text">me: 小陆</div>
+    </div>
+
+    <script>
+        const words = ['小幽', '小泉', '小清', '寄居蟹'];
+        const displayElement = document.getElementById('wordDisplay');
+        let currentIndex = 0;
+
+        function showNextWord() {
+            const word = words[currentIndex];
+            let currentLetterIndex = 0;
+
+            displayElement.style.opacity = 1; // 显示当前词语
+            displayElement.innerText = ''; // 清空之前的词语
+
+            const interval = setInterval(() => {
+                if (currentLetterIndex < word.length) {
+                    displayElement.innerText += word[currentLetterIndex];
+                    currentLetterIndex++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        deleteWord();
+                    }, 1000);
+                }
+            }, 300);
+        }
+
+        function deleteWord() {
+            let currentWord = displayElement.innerText; // 获取当前显示的词语
+            const interval = setInterval(() => {
+                currentWord = currentWord.slice(0, -1);
+                displayElement.innerText = currentWord;
+
+                if (currentWord.length === 0) {
+                    clearInterval(interval);
+                    currentIndex = (currentIndex + 1) % words.length; // 更新索引
+                    setTimeout(showNextWord, 500); // 500ms后显示下一个词
+                }
+            }, 150);
+        }
+
+        showNextWord(); // 启动词语显示
+    </script>
+</body>
+</html>
